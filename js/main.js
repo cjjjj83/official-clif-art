@@ -1,3 +1,79 @@
+// Lightbox functionality
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.querySelector('.lightbox-image');
+const lightboxClose = document.querySelector('.lightbox-close');
+const lightboxPrev = document.querySelector('.lightbox-prev');
+const lightboxNext = document.querySelector('.lightbox-next');
+const portfolioCards = document.querySelectorAll('.portfolio-card[data-image]');
+
+let currentImageIndex = 0;
+const images = Array.from(portfolioCards).map(card => card.getAttribute('data-image'));
+
+// Open lightbox on portfolio card click
+portfolioCards.forEach((card, index) => {
+    card.addEventListener('click', function() {
+        currentImageIndex = index;
+        openLightbox(images[index]);
+    });
+});
+
+// Close lightbox
+function closeLightbox() {
+    lightbox.classList.remove('active');
+    lightboxImage.classList.remove('zoomed');
+}
+
+lightboxClose.addEventListener('click', closeLightbox);
+
+// Open lightbox
+function openLightbox(imageSrc) {
+    lightboxImage.src = imageSrc;
+    lightbox.classList.add('active');
+    lightboxImage.classList.remove('zoomed');
+}
+
+// Navigate to previous image
+lightboxPrev.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+    lightboxImage.src = images[currentImageIndex];
+    lightboxImage.classList.remove('zoomed');
+});
+
+// Navigate to next image
+lightboxNext.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    lightboxImage.src = images[currentImageIndex];
+    lightboxImage.classList.remove('zoomed');
+});
+
+// Zoom functionality on image click
+lightboxImage.addEventListener('click', (e) => {
+    e.stopPropagation();
+    lightboxImage.classList.toggle('zoomed');
+});
+
+// Close lightbox on background click
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        closeLightbox();
+    }
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('active')) {
+        if (e.key === 'ArrowLeft') {
+            lightboxPrev.click();
+        } else if (e.key === 'ArrowRight') {
+            lightboxNext.click();
+        } else if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    }
+});
+
 // Navigation Active Link
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function() {
@@ -108,4 +184,4 @@ window.addEventListener('scroll', () => {
     });
 });
 
-console.log('CLIF Art Portfolio Loaded!');
+console.log('Official Clifart Portfolio Loaded!');
